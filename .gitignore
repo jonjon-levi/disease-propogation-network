@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (avoid committing large raw files)
+data/raw/
+data/*.zip
+
+# OS
+.DS_Store

@@ -1,5 +1,6 @@
 import numpy as np
 import networkx as nx
+import random
 
 def simulate_sir(
     G,                      # G = (V,E) where nodes represent people and edges represent interactions
@@ -111,5 +112,36 @@ def choose_immunized_by_degree(G, k):
     nodes = sorted(G.degree, key=get_degree, reverse=True)
     immunized = set()
     for node, _ in nodes[:k]:
+        immunized.add(node)
+    return immunized
+
+def choose_immunized_random(G, k):
+    nodes = random.sample(list(G.nodes()), k) 
+    immunized = set()
+    for node in nodes[:k]:
+        immunized.add(node)
+    return immunized
+
+def choose_immunized_by_eigenvector_centrality(
+    G,
+    k,
+    weight="weight",
+    max_iter=1000,
+    tol=1.0e-6,
+):
+    if k <= 0:
+        return set()
+
+    k = min(k, G.number_of_nodes())
+    centrality = nx.eigenvector_centrality(
+        G,
+        max_iter=max_iter,
+        tol=tol,
+        weight=weight,
+    )
+    ranked_nodes = sorted(centrality.items(), key=lambda pair: pair[1], reverse=True)
+
+    immunized = set()
+    for node, _ in ranked_nodes[:k]:
         immunized.add(node)
     return immunized

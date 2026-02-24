@@ -4,7 +4,7 @@ import random
 
 def simulate_sir(
     G,                      # G = (V,E) where nodes represent people and edges represent interactions
-    beta,                   # transmition rate (higher beta faster spread)
+    beta,                   # transmission rate (higher beta faster spread)
     gamma,                  # recovery rate (higher gamma faster recovery)
     steps,                  # modeling time
     initial_infected,       # initial state of the disease

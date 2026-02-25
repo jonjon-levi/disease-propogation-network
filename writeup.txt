@@ -1,0 +1,36 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\title{Modeling Disease Networks using SIR Simulation}
+\author{E. Cruz-Martinez, N. Delingat, T. Eapen, L. Fiechter, J. Levi}
+\date{}
+
+\begin{document}
+
+\maketitle
+\doublespacing
+
+\section*{Abstract}
+
+Understanding how infectious diseases spread through human populations remains a central challenge in public health, particularly in highly connected social networks. This project investigates disease propagation using a network-based modeling framework, with the primary research question: which group of individuals is most susceptible to infection, what is the minimum fraction of this group that must be immunized to significantly reduce or suppress disease spread, and what strategies can we use to suppress infection and sickness spread the fastest? Identifying targeted vaccination strategies is especially important because widespread immunization can be costly, slow, or logistically difficult, while poorly targeted interventions may fail to prevent outbreaks. The study models a social network derived from online or real-world interaction data, where individuals are represented as nodes and social interactions as weighted edges. Edge weights reflect contact frequency or transmission likelihood. Additional attributes such as disease contagiousness, recovery or mortality rates, and individual vulnerability are incorporated into the model. Using this structure, we simulate disease transmission using random-walk--based spreading and diffusion over the graph. Spectral properties of the network, particularly those derived from the graph Laplacian, are analyzed to understand connectivity, cluster structure, and the potential speed and reach of outbreaks. Through repeated simulation and analysis, we expect to identify that highly connected individuals (high-degree nodes), along with those possessing higher intrinsic vulnerability to infection, play a disproportionately important role in causing virus transmission. Targeted immunization of a relatively small subset of these individuals may dramatically reduce overall spread.
+
+\section*{Introduction}
+
+The spread of infectious diseases remains a major public health concern, especially in highly connected social environments. Modern patterns of interaction create complex networks through which infections can propagate rapidly. Traditional epidemiological models often assume uniform mixing, which fails to capture the heterogeneous structure of real-world social networks. Network-based approaches provide a more realistic framework by representing individuals as nodes and interactions as edges, allowing researchers to analyze how connectivity and clustering influence disease transmission.
+
+Vaccination is one of the most effective methods for preventing outbreaks, but large-scale immunization campaigns can be costly and difficult to implement. In many situations, limited resources require targeted intervention strategies. Understanding which individuals or groups contribute most to disease spread is therefore essential for designing efficient control policies.
+
+This project investigates which groups of individuals in a social network are most susceptible to infection and what minimum fraction of these groups must be immunized to suppress disease spread. Using weighted network models, random-walk--based simulations, and spectral analysis of the graph Laplacian, we analyze how structural properties affect transmission dynamics. We hypothesize that highly connected and highly vulnerable individuals play a dominant role in spreading disease, and that targeted immunization of a relatively small subset of these nodes can significantly reduce overall transmission.
+
+\section*{Expected Results}
+
+We expect the simulations to demonstrate that disease spread is not homogeneous across a real world graph, with infection risk among specific subgroups of individuals rather than being uniformly distributed. In particular, nodes with high degree and high weighted connectivity are anticipated to exhibit higher infection rates.
+
+Spectral analysis of the graph Laplacian is expected to reveal that tightly connected clusters facilitate rapid local spread, while bridge nodes connecting clusters control for global diffusion. Specifically networks with smaller spectral gaps are expected to show faster outbreaks and broader reach, whereas networks with pronounced community structure may exhibit localized outbreaks that take longer to propagate.
+
+Simulation results are anticipated to indicate that random immunization strategies require a relatively large fraction of the population to be vaccinated to achieve meaningful suppression of disease spread. In contrast, targeted immunization that lowers the spectral gap is expected to produce a disproportionate reduction in outbreak size and transmission speed.
+
+\end{document}

@@ -33,4 +33,43 @@ Spectral analysis of the graph Laplacian is expected to reveal that tightly conn
 
 Simulation results are anticipated to indicate that random immunization strategies require a relatively large fraction of the population to be vaccinated to achieve meaningful suppression of disease spread. In contrast, targeted immunization that lowers the spectral gap is expected to produce a disproportionate reduction in outbreak size and transmission speed.
 
+\section*{Methods/Models}
+
+This project uses publicly available network data sources and established mathematical modeling frameworks to ensure reproducibility and methodological rigor. This will be broken down in the following subsections:
+\begin{itemize}
+    \item \textbf{High-Resolution Synthetic Contact networks}
+    \item \textbf{Empirical Social Interaction Structure}
+    \item \textbf{Established Propagation Models}
+    \item \textbf{Centrality-Based Intervention Strategies}
+\end{itemize}
+
+\subsection*{1. High-Resolution Synthetic Contact Networks}
+
+We utilize synthetic human contact network datasets representing individual-level interactions within households, schools, workplaces, and group quarters. These networks simulate realistic, multi-layered social contact structures and capture heterogeneous mixing patterns across hundreds to thousands of individuals per network. Such datasets are commonly used in epidemiological modeling to approximate real-world transmission environments.
+
+\subsection*{2. Empirical Social Interaction Structure}
+
+The constructed person-to-person contact network is derived from shared environments (e.g., occupation, education, and household membership), allowing us to model transmission along socially meaningful interaction pathways rather than assuming homogeneous mixing.
+
+\subsection*{3. Established Propagation Models}
+
+Disease spread is modeled using a discrete-time stochastic SIR (Susceptible-Infected-Recovered) framework. The model captures the branching transmission dynamics, where infected nodes may infect multiple neighbors. It also accounts for competing exposure effects when multiple infected neighbors attempt to transmit infection to a single susceptible node.
+
+\subsection*{4. Centrality-Based Intervention Strategies}
+
+To evaluate immunization strategies, we employ graph-theoretic centrality measures to identify structurally influential nodes. These include:
+
+\begin{itemize}
+    \item \textbf{Degree centrality}: identifies locally high-contact ``hubs.''
+    \item \textbf{Eigenvector centrality}: identifies globally influential nodes connected to other influential nodes.
+\end{itemize}
+
+These measures allow for the comparison of targeted vaccination strategies with random immunization.
+
+All computational methods rely on widely available open-source Python libraries such as \textbf{neworkx} and \textbf{numpy}, ensuring the accessibility, reproducibility, and transparency of the modeling framework.
+
+\subsection*{Limitations}
+
+Key risks include the high computational cost of eigenvalue decomposition on extremely large networks and the potential for "noise" or missing edges in real-world datasets, which might obscure the transmission dynamics.
+
 \end{document}

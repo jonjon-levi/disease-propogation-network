@@ -61,6 +61,8 @@ def simulate_sir(
     s, i, r, d = count_states()
     S.append(s); I.append(i); R.append(r); D.append(d)
 
+    total_inf = 0
+
     for _ in range(steps):
         new_state = state.copy()
 
@@ -85,6 +87,7 @@ def simulate_sir(
             # simulates a Bernoulli trial given p_inf
             if rng.random() < p_inf:
                 new_state[v] = 1
+                total_inf += 1
 
         # recovery / removal step
         for v in G.nodes():
@@ -103,7 +106,7 @@ def simulate_sir(
         if i == 0:
             break
 
-    return {"S": S, "I": I, "R": R, "D": D}
+    return {"S": S, "I": I, "R": R, "D": D, "Total_inf": total_inf}
 
 def get_degree(pair):
     return pair[1]

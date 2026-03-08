@@ -485,7 +485,7 @@ THE ABSTRACT\vskip12pt}\let\go\relax\fi
 
 
 \newcommand{\Firstpage}{%
-\setlength{\columnwidth}{0.695\textwidth}
+\setlength{\columnwidth}{157pt}
 \setlength{\linewidth}{0.66\textwidth}
 \setlength{\hsize}{0.66\textwidth}
 \setlength{\columnsep}{10pt}
@@ -495,7 +495,7 @@ THE ABSTRACT\vskip12pt}\let\go\relax\fi
 \let\FPeverypar\everypar
 \newtoks\everypar
 \newtoks\listeverypar
-\setlength{\columnwidth}{0.7\textwidth}
+\setlength{\columnwidth}{157pt}
 \setlength{\linewidth}{0.655\textwidth}
 \setlength{\hsize}{0.655\textwidth}
 \setlength{\parskip}{0pt}\FPeverypar{\the\everypar\the\listeverypar\stepcounter{parcount}\ifnum\theparcount=0\relax\else\ifnum\theparcount>0\ifnum\theparcount=#2\normalcolwidth\adjlinewidth{#1}{0}{0.655}\fi\fi\fi}}
@@ -531,13 +531,13 @@ THE ABSTRACT\vskip12pt}\let\go\relax\fi
         \setbox\@outputbox\vbox{\unvbox\@outputbox\unskip}%
         \setbox\@outputbox\vsplit\@outputbox to\maxdimen
   \else
-\ifnum\value{page}=1
+\iffalse
 %\linewidth=0.655\textwidth
 %\hsize=0.655\textwidth
 \global \@firstcolumntrue
 \setbox\@outputbox \vbox {%
                          \hb@xt@\textwidth {%
-                           \hb@xt@0.7\textwidth {%
+                           \hb@xt@0.66\textwidth {%
                              \box\@leftcolumn \hss}%
                            \hfil
                            \vrule \@width\columnseprule

@@ -2,6 +2,27 @@
 \articletype{RESEARCH ARTICLE}
 
 \templatetype{pnasresearcharticle}
+% Keep normal two-column flow, but place Significance at the bottom-right on page 1.
+\makeatletter
+\additionalelement{%
+\afterpage{%
+\begin{sigstatements}
+\sffamily
+\mdfdefinestyle{pnassigstylebottom}{backgroundcolor=pnasblueback,linecolor=pnasblueback,fontcolor=pnasbluetext,innertopmargin=9.3pt,innerrightmargin=11.4pt,innerbottommargin=12pt,innerleftmargin=11.4pt,linewidth=0pt,userdefinedwidth=\columnwidth}
+\@ifundefined{@significancestatement}{}{%
+\begin{mdframed}[style=pnassigstylebottom]
+\section*{\textcolor{pantone}{Significance}}
+\raggedright\fontsize{8.5}{12}\selectfont\textcolor{black}\@significancestatement
+\end{mdframed}}
+\end{sigstatements}
+}}
+\makeatother
+\renewcommand{\abscontent}{
+\noindent{\absfont \theabstract\par}
+\vskip10pt
+\noindent{\keywordsfont \@ifundefined{@keywords}{}{\@keywords}\par}
+\vskip12pt
+}
 
 \begin{document}
 
@@ -35,11 +56,8 @@ Understanding how infectious diseases spread through human populations remains a
 \maketitle
 \thispagestyle{firststyle}
 \ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
-
-\Firstpage
-
 \section*{Introduction}
-The spread of infectious diseases remains a major public health concern, especially in highly connected social environments. Modern patterns of interaction create complex networks through which infections can propagate rapidly. Traditional epidemiological models often assume uniform mixing, which fails to capture the heterogeneous structure of real-world social networks. Network-based approaches provide a more realistic framework by representing individuals as nodes and interactions as edges, allowing researchers to analyze how connectivity and clustering influence disease transmission. Vaccination is one of the most effective methods for preventing outbreaks, but large-scale immunization campaigns can be costly and difficult to implement. In many situations, limited resources require targeted intervention strategies. Understanding which individuals or groups contribute most to disease spread is therefore essential for designing efficient control policies. This project investigates which groups of individuals in a social network are most susceptible to infection and what minimum fraction of these groups must be immunized to suppress disease spread. Using weighted network models, random-walk--based simulations, and spectral analysis of the graph Laplacian, we analyze how structural properties affect transmission dynamics. We hypothesize that highly connected and highly vulnerable individuals play a dominant role in spreading disease, and that targeted immunization of a relatively small subset of these nodes can significantly reduce overall transmission.
+We study disease spread on a contact network under a fixed vaccination budget. Individuals are represented as nodes, interactions as edges, and transmission is modeled with a stochastic SIR process. The central question is: for a given $k$, which immunized set $U$ best reduces outbreak severity? We evaluate practical immunization strategies by comparing two outcomes from simulation: peak infections $I_{\max}(U)$ and total infected $T_{\mathrm{inf}}(U)$. This framing directly matches the optimization problem in the following section and allows a consistent comparison of strategy performance as vaccination coverage changes.
 
 \section*{Expected Results}
 We expect the simulations to demonstrate that disease spread is not homogeneous across a real world graph, with infection risk among specific subgroups of individuals rather than being uniformly distributed. In particular, nodes with high degree and high weighted connectivity are anticipated to exhibit higher infection rates. Spectral analysis of the graph Laplacian is expected to reveal that tightly connected clusters facilitate rapid local spread, while bridge nodes connecting clusters control for global diffusion. Specifically networks with smaller spectral gaps are expected to show faster outbreaks and broader reach, whereas networks with pronounced community structure may exhibit localized outbreaks that take longer to propagate. Simulation results are anticipated to indicate that random immunization strategies require a relatively large fraction of the population to be vaccinated to achieve meaningful suppression of disease spread. In contrast, targeted immunization that lowers the spectral gap is expected to produce a disproportionate reduction in outbreak size and transmission speed.
@@ -56,7 +74,7 @@ Each node $v\in V$ has state $X_v(t)\in\{\mathrm{S},\mathrm{I},\mathrm{R}\}$ at 
     \]
     where $w_{uv}$ is the contact weight on edge $(u,v)$.
     \item If $X_v(t)=\mathrm{I}$, then $v$ recovers with probability $\gamma$.
-    \item Recovered nodes remain in state $\mathrm{R}$.
+    \item Recovered nodes remain in state $\mathrm{R}$, with no chance of reinfection.
 \end{itemize}
 
 Before the epidemic starts, choose an immunized set $U\subseteq V$ with budget
@@ -73,7 +91,7 @@ I_{\max}(U)=\max_t I_t(U),
 T_{\mathrm{inf}}(U)=\left|\{v\in V:\ v\text{ becomes infected at least once}\}\right|.
 \]
 
-The optimization goal is to choose $U$ to minimize either expected peak prevalence
+The optimization goal is to choose $U$ to minimize either expected peak infections
 \[
 \min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[I_{\max}(U)],
 \]
@@ -85,10 +103,10 @@ or expected outbreak size
 In practice the evaluation of these problems is not computationally tractable; instead we empirically analyze various simpler strategies in the construction of $U$.
 
 \section*{Limitations}
-Our current experiments are bounded by computational power. In particular we are only able to run our experiments on networks of a few thousand nodes, importantly the results may vary for out of distribution networks. Comparing various measures of topology against our results is also not especially tractable, for example the small worlds coefficient
-Key risks include the high computational cost of eigenvalue decomposition on extremely large networks and the potential for "noise" or missing edges in real-world datasets, which might obscure the transmission dynamics.
+Our current experiments are bounded by computational power. In particular we are only able to run our experiments on networks of a few thousand nodes, however the results may vary for out-of-distribution networks. Notably betweenness centrality is also not included because we are unable to perform this analysis our network data. 
 
-\matmethods{This project uses publicly available network data sources and established mathematical modeling frameworks to ensure reproducibility and methodological rigor. This will be broken down in the following subsections: 
+\section*{Materials and Methods}
+This project uses publicly available network data sources and established mathematical modeling frameworks to ensure reproducibility and methodological rigor. This will be broken down in the following subsections: 
 
 \begin{itemize}
     \item \textbf{High-Resolution Synthetic Contact networks} 
@@ -115,9 +133,6 @@ To evaluate immunization strategies, we employ graph-theoretic centrality measur
 \end{itemize}
 
 These measures allow for the comparison of targeted vaccination strategies with random immunization. All computational methods rely on widely available open-source Python libraries such as \textbf{networkx} and \textbf{numpy}, ensuring the accessibility, reproducibility, and transparency of the modeling framework.
-}
-
-\showmatmethods{} % Display the Materials and Methods section
 
 \dataavail{All data and code will be made available upon publication in an open-source repository.}
 

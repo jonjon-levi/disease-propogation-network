@@ -1,43 +1,88 @@
-import pandas as pd
-import networkx as nx
 from itertools import combinations
+from pathlib import Path
 
-base = "./data/WY/56001"
+import networkx as nx
+import pandas as pd
 
-p = pd.read_csv(f"{base}/people.txt", sep="\t")
-gqp = pd.read_csv(f"{base}/gq_people.txt", sep="\t")
 
-# Person -> place edges
-edges = []
-for _, r in p.iterrows():
-  pid = f"P:{r.sp_id}"
-  edges.append((pid, f"H:{r.sp_hh_id}", "household"))
-  if r.school_id != "X":
-      edges.append((pid, f"S:{r.school_id}", "school"))
-  if r.work_id != "X":
-      edges.append((pid, f"W:{r.work_id}", "work"))
+def _largest_connected_component_subgraph(graph):
+    if graph.number_of_nodes() == 0:
+        return graph.copy()
+    largest_nodes = max(nx.connected_components(graph), key=len)
+    return graph.subgraph(largest_nodes).copy()
 
-for _, r in gqp.iterrows():
-  edges.append((f"P:{r.sp_id}", f"G:{r.sp_gq_id}", "gq"))
 
-B = nx.Graph()
-for u, v, t in edges:
-  B.add_node(u, kind="person")
-  B.add_node(v, kind="place")
-  B.add_edge(u, v, rel=t)
+def _add_person_place_edges(people_df, gq_people_df):
+    edges = []
 
-# Optional person-person projection (shared places)
-G = nx.Graph()
-places = [n for n, d in B.nodes(data=True) if d["kind"] == "place"]
-for place in places:
-  people = [n for n in B.neighbors(place) if B.nodes[n]["kind"] == "person"]
-  rel = place.split(":")[0]
-  for a, b in combinations(people, 2):
-      if G.has_edge(a, b):
-          G[a][b]["weight"] += 1
-          G[a][b]["rels"].add(rel)
-      else:
-          G.add_edge(a, b, weight=1, rels={rel})
+    for _, row in people_df.iterrows():
+        person_id = f"P:{row.sp_id}"
+        edges.append((person_id, f"H:{row.sp_hh_id}", "household"))
+        if row.school_id != "X":
+            edges.append((person_id, f"S:{row.school_id}", "school"))
+        if row.work_id != "X":
+            edges.append((person_id, f"W:{row.work_id}", "work"))
 
-print("bipartite:", B.number_of_nodes(), B.number_of_edges())
-print("person-person:", G.number_of_nodes(), G.number_of_edges())
+    for _, row in gq_people_df.iterrows():
+        edges.append((f"P:{row.sp_id}", f"G:{row.sp_gq_id}", "gq"))
+
+    return edges
+
+
+def build_bipartite_graph_from_dataframes(people_df, gq_people_df):
+    """
+    Build a person-place bipartite graph.
+
+    Person nodes are prefixed with `P:` and place nodes with one of
+    `H:`, `S:`, `W:`, `G:` for household/school/work/group-quarters.
+    """
+    graph = nx.Graph()
+    for u, v, rel in _add_person_place_edges(people_df, gq_people_df):
+        graph.add_node(u, kind="person")
+        graph.add_node(v, kind="place")
+        graph.add_edge(u, v, rel=rel)
+    return graph
+
+
+def project_people_graph(bipartite_graph):
+    """
+    Project a person-place bipartite graph to a weighted person-person graph.
+    """
+    person_graph = nx.Graph()
+    place_nodes = [
+        node for node, data in bipartite_graph.nodes(data=True) if data.get("kind") == "place"
+    ]
+
+    for place in place_nodes:
+        people = [
+            neighbor
+            for neighbor in bipartite_graph.neighbors(place)
+            if bipartite_graph.nodes[neighbor].get("kind") == "person"
+        ]
+        rel = place.split(":")[0]
+        for a, b in combinations(people, 2):
+            if person_graph.has_edge(a, b):
+                person_graph[a][b]["weight"] += 1
+                person_graph[a][b]["rels"].add(rel)
+            else:
+                person_graph.add_edge(a, b, weight=1, rels={rel})
+
+    return person_graph
+
+
+def load_wy_county_graphs(base_path):
+    """
+    Load WY county raw files and return (bipartite_graph, person_projection_graph).
+
+    `base_path` can be absolute or relative to the project root.
+    """
+    base = Path(base_path)
+    people_df = pd.read_csv(base / "people.txt", sep="\t")
+    gq_people_df = pd.read_csv(base / "gq_people.txt", sep="\t")
+
+    bipartite = build_bipartite_graph_from_dataframes(people_df, gq_people_df)
+    person_projection = project_people_graph(bipartite)
+
+    bipartite_lcc = _largest_connected_component_subgraph(bipartite)
+    person_projection_lcc = _largest_connected_component_subgraph(person_projection)
+    return bipartite_lcc, person_projection_lcc

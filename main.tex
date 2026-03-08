@@ -11,7 +11,7 @@
 \begin{document}
 
 \maketitle
-\doublespacing
+%\doublespacing
 
 \section*{Abstract}
 
@@ -32,6 +32,50 @@ We expect the simulations to demonstrate that disease spread is not homogeneous 
 Spectral analysis of the graph Laplacian is expected to reveal that tightly connected clusters facilitate rapid local spread, while bridge nodes connecting clusters control for global diffusion. Specifically networks with smaller spectral gaps are expected to show faster outbreaks and broader reach, whereas networks with pronounced community structure may exhibit localized outbreaks that take longer to propagate.
 
 Simulation results are anticipated to indicate that random immunization strategies require a relatively large fraction of the population to be vaccinated to achieve meaningful suppression of disease spread. In contrast, targeted immunization that lowers the spectral gap is expected to produce a disproportionate reduction in outbreak size and transmission speed.
+
+\section*{Problem Statement}
+
+Given a fixed $k$ number of vaccinations, how does the choice in immunized nodes in the contact network affect both the peak number of infected and total number infected. How do the various strategies change in relation to the number of vaccinations and the small-worlds coefficient.
+
+\section*{Mathematical Problem Statement}
+
+Let $G=(V,E)$ be a contact network with $|V|=n$ individuals. We run a discrete-time stochastic SIR process on $G$ with transmission rate $\beta$ and recovery rate $\gamma$.
+
+Each node $v\in V$ has state $X_v(t)\in\{\mathrm{S},\mathrm{I},\mathrm{R}\}$ at time $t$. For each time step:
+\begin{itemize}
+    \item If $X_v(t)=\mathrm{S}$, then $v$ becomes infected with probability
+    \[
+    p_v(t)=1-\exp\!\left(-\beta\sum_{u\in N(v)} w_{uv}\,\mathbf{1}\{X_u(t)=\mathrm{I}\}\right),
+    \]
+    where $w_{uv}$ is the contact weight on edge $(u,v)$.
+    \item If $X_v(t)=\mathrm{I}$, then $v$ recovers with probability $\gamma$.
+    \item Recovered nodes remain in state $\mathrm{R}$.
+\end{itemize}
+
+Before the epidemic starts, choose an immunized set $U\subseteq V$ with budget
+\[
+|U|=k, \qquad 0\le k\le n,
+\]
+and initialize all $v\in U$ in state $\mathrm{R}$.
+
+For a fixed immunization set $U$, let $I_t(U)$ be the number of infected nodes at time $t$, and define
+\[
+I_{\max}(U)=\max_t I_t(U),
+\]
+\[
+T_{\mathrm{inf}}(U)=\left|\{v\in V:\ v\text{ becomes infected at least once}\}\right|.
+\]
+
+The optimization goal is to choose $U$ to minimize either expected peak prevalence
+\[
+\min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[I_{\max}(U)],
+\]
+or expected outbreak size
+\[
+\min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[T_{\mathrm{inf}}(U)].
+\]
+
+In practice, the expectations are estimated with Monte Carlo trials, and strategies (random, degree-based, centrality-based, nomination-based, adaptive) are compared as candidate constructions of $U$.
 
 \section*{Methods/Models}
 
@@ -62,6 +106,7 @@ To evaluate immunization strategies, we employ graph-theoretic centrality measur
 \begin{itemize}
     \item \textbf{Degree centrality}: identifies locally high-contact ``hubs.''
     \item \textbf{Eigenvector centrality}: identifies globally influential nodes connected to other influential nodes.
+    \
 \end{itemize}
 
 These measures allow for the comparison of targeted vaccination strategies with random immunization.

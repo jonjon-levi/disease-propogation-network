@@ -10,6 +10,9 @@ env/
 # Data (avoid committing large raw files)
 data/raw/
 data/*.zip
+data/*.pkl
+*.pickle
+*.pkl
 
 # OS
 .DS_Store

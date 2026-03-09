@@ -1,77 +1,108 @@
-\documentclass[10pt]{article}
+\documentclass[9pt,twocolumn,twoside]{pnas-new}
+\articletype{Physical Sciences; Applied Mathematics}
 
-\usepackage[margin=1in]{geometry}
-\usepackage{setspace}
-\usepackage{hyperref}
-
-\title{Modeling Disease Networks using SIR Simulation}
-\author{E. Cruz-Martinez, N. Delingat, T. Eapen, L. Fiechter, J. Levi}
-\date{}
+\templatetype{pnasresearcharticle}
 
 \begin{document}
 
+\title{Modeling Disease Networks using Susceptible-Infected-Recovered Simulation}
+
+\author[a]{E. Cruz-Martinez}
+\author[a]{N. Delingat}
+\author[a]{T. Eapen}
+\author[a,1]{L. Fiechter}
+\author[a]{J. Levi}
+
+\affil[a]{Department of Mathematics, University of California, Los Angeles, CA 90095}
+
+\significancestatement{Large-scale immunization campaigns often face strict budget and logistical constraints, making targeted vaccination essential but difficult to execute. This study demonstrates that practical, decentralized strategies, E.g. asking individuals to nominate their contacts, can achieve outbreak suppression comparable to idealized methods that require complete, unattainable knowledge of a population's social network. By proving that limited-information polling effectively identifies highly connected transmission hubs, these findings offer public health officials actionable and highly efficient immunization protocols that do not rely on perfect population data.}
+
+\authorcontributions{Author contributions: }
+\authordeclaration{The authors declare no competing interest}
+\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed.\\ E-mail: lucfiechter@g.ucla.edu}
+
+\keywords{Disease Networks $|$ SIR Simulation $|$ Epidemic Modeling $|$ Targeted Immunization}
+
+\begin{abstract}
+Understanding how infectious diseases spread through human populations remains a central challenge in public health, particularly within highly connected social networks. When widespread immunization is costly, slow, or logistically difficult, determining which individuals to target under a restricted budget becomes critical to minimizing peak infections and total outbreak size. This study investigates disease propagation using a discrete-time stochastic Susceptible-Infected-Recovered (SIR) model on a realistic synthetic social contact network derived from U.S. Census data and alternative sampled data. We simulate and compare various targeted immunization strategies, ranging from idealized approaches requiring complete network knowledge (e.g., Degree Centrality and Adaptive Degree) to practical, decentralized methods (e.g., Neighbor Nomination and Self-Polling). Our simulations reveal that highly connected transmission hubs play a disproportionate role in spreading the virus. Specifically, we demonstrate that an adaptive degree strategy can achieve near-zero peak infections by vaccinating just 40\% of the population. More importantly, practical polling strategies reach similar outbreak suppression levels at approximately 50\% coverage, proving almost as effective as fully informed models and significantly outperforming random immunization baselines. These quantitative thresholds suggest that efficiently suppressing an epidemic does not strictly require global network data, providing actionable, localized frameworks for real-world public health interventions.
+\end{abstract}
+
+\dates{This manuscript was compiled on \today}
+\doi{\url{www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX}}
+
 \maketitle
-\doublespacing
-
-\section*{Abstract}
-
-Understanding how infectious diseases spread through human populations remains a central challenge in public health, particularly in highly connected social networks. This project investigates disease propagation using a network-based modeling framework, with the primary research question: which group of individuals is most susceptible to infection, what is the minimum fraction of this group that must be immunized to significantly reduce or suppress disease spread, and what strategies can we use to suppress infection and sickness spread the fastest? Identifying targeted vaccination strategies is especially important because widespread immunization can be costly, slow, or logistically difficult, while poorly targeted interventions may fail to prevent outbreaks. The study models a social network derived from online or real-world interaction data, where individuals are represented as nodes and social interactions as weighted edges. Edge weights reflect contact frequency or transmission likelihood. Additional attributes such as disease contagiousness, recovery or mortality rates, and individual vulnerability are incorporated into the model. Using this structure, we simulate disease transmission using random-walk-based spreading and diffusion over the graph. Spectral properties of the network, particularly those derived from the graph Laplacian, are analyzed to understand connectivity, cluster structure, and the potential speed and reach of outbreaks. Through repeated simulation and analysis, we expect to identify that highly connected individuals (high-degree nodes), along with those possessing higher intrinsic vulnerability to infection (immunocompromised), play a disproportionately important role in causing virus transmission. Targeted immunization of a relatively small subset of these individuals may dramatically reduce overall spread.
-
-\section*{Keywords:} Disease Networks; SIR model; Contact networks; Network centrality; Targeted immunization; Spectral graph theory
+\thispagestyle{firststyle}
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
 
 \section*{Introduction}
+The spread of infectious diseases remains a major public health concern, especially in highly connected social environments. Modern patterns of interaction create complex networks through which infections can propagate rapidly. Traditional epidemiological models often assume uniform mixing, which fails to capture the heterogeneous structure of real-world social networks. Network-based approaches provide a more realistic framework by representing individuals as nodes and interactions as edges, allowing researchers to analyze how connectivity and clustering influence disease transmission. Vaccination is one of the most effective methods for preventing outbreaks, but large-scale immunization campaigns can be costly and difficult to implement. In many situations, limited resources require targeted intervention strategies. Understanding which individuals or groups contribute most to disease spread is therefore essential for designing efficient control policies. This project investigates the effectiveness of several vaccine distribution strategies using synthetic contact network models. 
 
-The spread of infectious diseases remains a major public health concern, especially in highly connected social environments. Modern patterns of interaction create complex networks through which infections can propagate rapidly. Traditional epidemiological models often assume uniform mixing, which fails to capture the heterogeneous structure of real-world social networks. Network-based approaches provide a more realistic framework by representing individuals as nodes and interactions as edges, allowing researchers to analyze how connectivity and clustering influence disease transmission.
+\section*{Mathematical Problem Statement and Framework}
+Let $G=(V,E)$ be a contact network with $|V|=n$ individuals. We run a discrete-time stochastic SIR process on $G$ with transmission rate $\beta$ and recovery rate $\gamma$.
 
-Vaccination is one of the most effective methods for preventing outbreaks, but large-scale immunization campaigns can be costly and difficult to implement. In many situations, limited resources require targeted intervention strategies. Understanding which individuals or groups contribute most to disease spread is therefore essential for designing efficient control policies.
-
-This project investigates which groups of individuals in a social network are most susceptible to infection and what minimum fraction of these groups must be immunized to suppress disease spread. Using weighted network models, random-walk--based simulations, and spectral analysis of the graph Laplacian, we analyze how structural properties affect transmission dynamics. We hypothesize that highly connected and highly vulnerable individuals play a dominant role in spreading disease, and that targeted immunization of a relatively small subset of these nodes can significantly reduce overall transmission.
-
-\section*{Expected Results}
-
-We expect the simulations to demonstrate that disease spread is not homogeneous across a real world graph, with infection risk among specific subgroups of individuals rather than being uniformly distributed. In particular, nodes with high degree and high weighted connectivity are anticipated to exhibit higher infection rates.
-
-Spectral analysis of the graph Laplacian is expected to reveal that tightly connected clusters facilitate rapid local spread, while bridge nodes connecting clusters control for global diffusion. Specifically networks with smaller spectral gaps are expected to show faster outbreaks and broader reach, whereas networks with pronounced community structure may exhibit localized outbreaks that take longer to propagate.
-
-Simulation results are anticipated to indicate that random immunization strategies require a relatively large fraction of the population to be vaccinated to achieve meaningful suppression of disease spread. In contrast, targeted immunization that lowers the spectral gap is expected to produce a disproportionate reduction in outbreak size and transmission speed.
-
-\section*{Methods/Models}
-
-This project uses publicly available network data sources and established mathematical modeling frameworks to ensure reproducibility and methodological rigor. This will be broken down in the following subsections:
+Each node $v\in V$ has state $X_v(t)\in\{\mathrm{S},\mathrm{I},\mathrm{R}\}$ at time $t$. For each time step:
 \begin{itemize}
-    \item \textbf{High-Resolution Synthetic Contact networks}
-    \item \textbf{Empirical Social Interaction Structure}
-    \item \textbf{Established Propagation Models}
-    \item \textbf{Centrality-Based Intervention Strategies}
+    \item If $X_v(t)=\mathrm{S}$, then $v$ becomes infected with probability
+    \[
+    p_v(t)=1-\exp\!\left(-\beta\sum_{u\in N(v)} w_{uv}\,\mathbf{1}\{X_u(t)=\mathrm{I}\}\right),
+    \]
+    where $w_{uv}$ is the contact weight on edge $(u,v)$.
+    \item If $X_v(t)=\mathrm{I}$, then $v$ recovers with probability $\gamma$.
+    \item Recovered nodes remain in state $\mathrm{R}$.
 \end{itemize}
 
-\subsection*{1. High-Resolution Synthetic Contact Networks}
+Before the epidemic starts, choose an immunized set $U\subseteq V$ with budget
+\[
+|U|=k, \qquad 0\le k\le n,
+\]
+and initialize all $v\in U$ in state $\mathrm{R}$.
 
-We utilize synthetic human contact network datasets representing individual-level interactions within households, schools, workplaces, and group quarters. These networks simulate realistic, multi-layered social contact structures and capture heterogeneous mixing patterns across hundreds to thousands of individuals per network. Such datasets are commonly used in epidemiological modeling to approximate real-world transmission environments.
+For a fixed immunization set $U$, let $I_t(U)$ be the number of infected nodes at time $t$, and define
+\[
+I_{\max}(U)=\max_t I_t(U),
+\]
+\[
+T_{\mathrm{inf}}(U)=\left|\{v\in V:\ v\text{ becomes infected at least once}\}\right|.
+\]
 
-\subsection*{2. Empirical Social Interaction Structure}
+The optimization goal is to choose $U$ to minimize either expected peak prevalence
+\[
+\min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[I_{\max}(U)],
+\]
+or expected outbreak size
+\[
+\min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[T_{\mathrm{inf}}(U)].
+\]
 
-The constructed person-to-person contact network is derived from shared environments (e.g., occupation, education, and household membership), allowing us to model transmission along socially meaningful interaction pathways rather than assuming homogeneous mixing.
-
-\subsection*{3. Established Propagation Models}
-
-Disease spread is modeled using a discrete-time stochastic SIR (Susceptible-Infected-Recovered) framework. The model captures the branching transmission dynamics, where infected nodes may infect multiple neighbors. It also accounts for competing exposure effects when multiple infected neighbors attempt to transmit infection to a single susceptible node.
-
-\subsection*{4. Centrality-Based Intervention Strategies}
-
-To evaluate immunization strategies, we employ graph-theoretic centrality measures to identify structurally influential nodes. These include:
-
+In practice, the expectations are estimated with Monte Carlo trials, and strategies (random, degree-based, centrality-based, nomination-based, adaptive) are compared as candidate constructions of $U$.
+\section*{Methods and Models}
+We utilized a synthetic population dataset, FRED's U.S Synthetic Population, which is based on SynthPop 2010 from RTI International that is highly representative of real-life contact networks. Both FRED and SynthPop 2010 are publicly available for non-commercial use. The original dataset FRED improves upon is SynthPop 2010 version 1.0, which used sampling data across five years, U.S. Census data, and other feature data such as school and workplace counts to construct an accurate representation of practical contact networks. More specifically, we use the Albany, Wyoming subset of the FRED U.S dataset to perform our experiments. The FRED dataset was chosen due to its public availability, accuracy, and ease of use. To simulate disease spread, we used a SIR framework model directly on the FRED dataset. Our objective is to identify an optimal vaccination strategy to minimize peak disease prevalence and total outbreak size. The vaccination strategies we tested are as follows:
 \begin{itemize}
-    \item \textbf{Degree centrality}: identifies locally high-contact ``hubs.''
-    \item \textbf{Eigenvector centrality}: identifies globally influential nodes connected to other influential nodes.
+    \item \textbf{Degree Centrality}: An idealized strategy to target "social butterflies" - individuals that have the most contact with other individuals. The subset of members $U$ to be vaccinated contains the $k$ nodes with the highest degree.
+    \item \textbf{Adaptive Degree}: A standard degree centrality approach can become redundant if the highest degree nodes are all clustered together. To solve this, the adaptive degree method dynamically calculates degrees. The highest degree node in $G$, $v'$, is found and added to the subset $U$ to be vaccinated. Then $v'$ is removed from $G$, and the degrees of the remaining nodes in $G$ are recalculated. This process is repeated until $|U|=k$, I.e. we've reached our vaccination budget.
+    \item \textbf{Eigenvector Centrality}: A different idealized approach that constructs $U$ from the principal eigenvector of the adjacency matrix of $G$. The idea here is to target nodes that are not just highly connected, but connected to other highly connected nodes, effectively targeting the core of the network.
+    \item \textbf{Neighbor Nomination}: A practical strategy where a sample population is polled and asked to nominate a friend to be vaccinated. This allows us to vaccinate the highest-degree hubs without requiring full knowledge of the network structure, which may not be known in a realistic setting. We simulate this nomination strategy by picking a random node $v$ with edge $(u,v)$ to be nominated by $u$, the individual being polled. $v$ is vaccinated and removed from $G$. This process is repeated until $|U|=k$.
+    \item \textbf{Self-Polling Nomination}: Another practical strategy where a sample of the population is polled and asked to estimate how many friends they have. The $k$ individuals with the most friends are then vaccinated. This is simulated by choosing a random subset $S\subset G$, then vaccinating the $k$ highest degree nodes within $S$.
+    \item \textbf{Random (Baseline)}: $U$ is chosen uniformly at random. We use this strategy as a baseline/control strategy.
 \end{itemize}
+All simulations were implemented in Python. Parameters $\gamma$, $\beta$, and $|I_0|$ were set to . . . respectively to mimic values from the COVID-19 pandemic. For each vaccination strategy and budget $k\in\{0.05n, 0.10n, 0.15n, ..., n\}$, 500 Monte Carlo simulations were run. For each trial $I_0$ was randomly selected, and ran until $|I_t| = 0$. From these simulations we construct an expected (average) result of the outcomes for each respective strategy. Our full code repository is available on GitHub at \href{https://github.com/jonjon-levi/disease-propogation-network}{this link}. 
 
-These measures allow for the comparison of targeted vaccination strategies with random immunization.
+\section*{Results}
+Under the baseline scenario with no immunization ($k=0$), the disease spread unmitigated, resulting in the highest recorded values for both peak prevalence and total outbreak size across all trials.
+When introducing the immunization budget $k > 0$, we observe a linear decline in peak infections, $\mathbb{E}[I_{\max}(U)]$, as $k$ approaches $n$ in all strategies. The adaptive degree strategy decreases in peak infections the fastest of the set of immunization strategies as $k$ increases and requires the lowest budget to achieve near 0 peak infections, only needing about 40\% of the population to be vaccinated. Degree and Self-Polling nomination strategies perform similarly, requiring about 50\% of the population to be vaccinated before reaching near 0 peak infections. Eigenvector Centrality performs the worst of informed strategies, but still performs significantly better than the random immunization strategy. 
+\section*{Conclusions and Discussions}
+Our results show that practical vaccination strategies can be highly effective, and match well to fully informed idealized strategies. Specifically the Neighbor Nomination and Self-Polling immunization strategies perform very well compared to Eigenvector or Degree immunization strategies, which require full knowledge of the social contact network. It is a notable takeaway that every informed strategy tested significantly outperformed random immunization. In future work it would be interesting to look into other practical strategies, such as heuristic strategies that vaccinate individuals based on field of work, E.g. vaccinating medical personnel first as was done in the COVID-19 pandemic. 
+\section*{Limitations}
+Limitations in our work are numerous, but chiefly we cite computational power. In an ideal world we could grid search across all our parameters, I.e vary $\gamma$, $\beta$, and $I_0$, and run more Monte Carlo simulations to achieve more precise expected values, but we are limited by our personal machines. Furthermore, we lack the computational power to perform SIR across a larger, US-wide population set, thus we used data from a small town in Wyoming provided by FRED to perform our experiments. 
 
-All computational methods rely on widely available open-source Python libraries such as \textbf{networkx} and \textbf{numpy}, ensuring the accessibility, reproducibility, and transparency of the modeling framework.
+\dataavail{All data and code will be made available upon publication in an open-source repository.}
 
-\subsection*{Limitations}
+\acknow{We would like to acknowledge the support and resources provided during the course of this project.}
 
-Key risks include the high computational cost of eigenvalue decomposition on extremely large networks and the potential for "noise" or missing edges in real-world datasets, which might obscure the transmission dynamics.
+\showacknow{} % Display the acknowledgments section
+
+% \bibsplit[3]
+% Bibliography
+% \bibliography{pnas-sample}
 
 \end{document}

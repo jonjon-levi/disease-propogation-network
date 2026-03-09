@@ -19,9 +19,9 @@
 
 \authorcontributions{Author contributions: }
 \authordeclaration{The authors declare no competing interest}
-\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed.\\ E-mail: lucfiechter@g.ucla.edu}
+\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed.\\ E-mail: lucfiechter@ucla.edu, thomaseapen@ucla.edu}
 
-\keywords{Disease Networks $|$ SIR Simulation $|$ Epidemic Modeling $|$ Targeted Immunization}
+\keywords{Disease Networks $|$ SIR Simulation $|$ Epidemic Modeling $|$ Targeted Immunization Strategies $|$ Synthetic Population}
 
 \begin{abstract}
 Understanding how infectious diseases spread through human populations remains a central challenge in public health, particularly within highly connected social networks. When widespread immunization is costly, slow, or logistically difficult, determining which individuals to target under a restricted budget becomes critical to minimizing peak infections and total outbreak size. This study investigates disease propagation using a discrete-time stochastic Susceptible-Infected-Recovered (SIR) model on a realistic synthetic social contact network derived from U.S. Census data and alternative sampled data. We simulate and compare various targeted immunization strategies, ranging from idealized approaches requiring complete network knowledge (e.g., Degree Centrality and Adaptive Degree) to practical, decentralized methods (e.g., Neighbor Nomination and Self-Polling). Our simulations reveal that highly connected transmission hubs play a disproportionate role in spreading the virus. Specifically, we demonstrate that an adaptive degree strategy can achieve near-zero peak infections by vaccinating just 40\% of the population. More importantly, practical polling strategies reach similar outbreak suppression levels at approximately 50\% coverage, proving almost as effective as fully informed models and significantly outperforming random immunization baselines. These quantitative thresholds suggest that efficiently suppressing an epidemic does not strictly require global network data, providing actionable, localized frameworks for real-world public health interventions.
@@ -34,45 +34,49 @@ Understanding how infectious diseases spread through human populations remains a
 \thispagestyle{firststyle}
 \ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
 
+
 \section*{Introduction}
 The spread of infectious diseases remains a major public health concern, especially in highly connected social environments. Modern patterns of interaction create complex networks through which infections can propagate rapidly. Traditional epidemiological models often assume uniform mixing, which fails to capture the heterogeneous structure of real-world social networks. Network-based approaches provide a more realistic framework by representing individuals as nodes and interactions as edges, allowing researchers to analyze how connectivity and clustering influence disease transmission. Vaccination is one of the most effective methods for preventing outbreaks, but large-scale immunization campaigns can be costly and difficult to implement. In many situations, limited resources require targeted intervention strategies. Understanding which individuals or groups contribute most to disease spread is therefore essential for designing efficient control policies. This project investigates the effectiveness of several vaccine distribution strategies using synthetic contact network models. 
 
 \section*{Mathematical Problem Statement and Framework}
+
 Let $G=(V,E)$ be a contact network with $|V|=n$ individuals. We run a discrete-time stochastic SIR process on $G$ with transmission rate $\beta$ and recovery rate $\gamma$.
 
 Each node $v\in V$ has state $X_v(t)\in\{\mathrm{S},\mathrm{I},\mathrm{R}\}$ at time $t$. For each time step:
 \begin{itemize}
     \item If $X_v(t)=\mathrm{S}$, then $v$ becomes infected with probability
-    \[
+    \begin{equation}
     p_v(t)=1-\exp\!\left(-\beta\sum_{u\in N(v)} w_{uv}\,\mathbf{1}\{X_u(t)=\mathrm{I}\}\right),
-    \]
+    \end{equation}
     where $w_{uv}$ is the contact weight on edge $(u,v)$.
+
     \item If $X_v(t)=\mathrm{I}$, then $v$ recovers with probability $\gamma$.
+
     \item Recovered nodes remain in state $\mathrm{R}$.
 \end{itemize}
 
 Before the epidemic starts, choose an immunized set $U\subseteq V$ with budget
-\[
+\begin{equation}
 |U|=k, \qquad 0\le k\le n,
-\]
+\end{equation}
 and initialize all $v\in U$ in state $\mathrm{R}$.
 
 For a fixed immunization set $U$, let $I_t(U)$ be the number of infected nodes at time $t$, and define
-\[
+\begin{equation}
 I_{\max}(U)=\max_t I_t(U),
-\]
-\[
+\end{equation}
+\begin{equation*}
 T_{\mathrm{inf}}(U)=\left|\{v\in V:\ v\text{ becomes infected at least once}\}\right|.
-\]
+\end{equation*}
 
 The optimization goal is to choose $U$ to minimize either expected peak prevalence
-\[
+\begin{equation}
 \min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[I_{\max}(U)],
-\]
+\end{equation}
 or expected outbreak size
-\[
+\begin{equation}
 \min_{U\subseteq V,\ |U|=k} \ \mathbb{E}[T_{\mathrm{inf}}(U)].
-\]
+\end{equation}
 
 In practice, the expectations are estimated with Monte Carlo trials, and strategies (random, degree-based, centrality-based, nomination-based, adaptive) are compared as candidate constructions of $U$.
 \section*{Methods and Models}
@@ -104,5 +108,28 @@ Limitations in our work are numerous, but chiefly we cite computational power. I
 % \bibsplit[3]
 % Bibliography
 % \bibliography{pnas-sample}
+
+\newpage
+\section*{References}
+
+\begin{enumerate}
+    \item SocioPatterns collaboration. \textit{Contacts in a workplace}. Available at: \url{https://sociopatterns.org/datasets/contacts-in-a-workplace/}. Accessed March 9, 2026.
+
+    \item SocioPatterns collaboration. \textit{Primary school temporal network data}. Available at: \url{https://sociopatterns.org/datasets/primary-school-temporal-network-data/}. Accessed March 9, 2026.
+
+    \item SocioPatterns collaboration. \textit{High school contact and friendship networks}. Available at: \url{https://sociopatterns.org/datasets/high-school-contact-and-friendship-networks/}. Accessed March 9, 2026.
+
+    \item SocioPatterns collaboration. \textit{Datasets}. Available at: \url{https://sociopatterns.org/datasets.html}. Accessed March 9, 2026.
+
+    \item Institute for Disease Modeling. \textit{SynthPops 1.8.1 documentation}. Available at: \url{https://docs.idmod.org/projects/synthpops/en/v1.8.1/}. Accessed March 9, 2026.
+
+    \item Kerr CC, Stuart RM, Mistry D, Abeysuriya RG, Rosenfeld R, Hart G, Núñez RC, Cohen JA, Selvaraj P, Hagedorn B, George L, Jastrzębski M, Izzo A, Fowler G, Palmer A, Delport D, Scott N, Kelly S, Bennette C, Wagner B, Chang S, Oron AP, Wenger E, Panovska-Griffiths J, Famulare M, Klein DJ (2021) Covasim: an agent-based model of COVID-19 dynamics and interventions. \textit{PLOS Computational Biology} 17(7):e1009149. \url{https://doi.org/10.1371/journal.pcbi.1009149}
+
+    \item Panovska-Griffiths J, Kerr CC, Stuart RM, Mistry D, Klein DJ, Viner RM, Bonnell C (2020) Determining the optimal strategy for reopening schools, the impact of test and trace interventions, and the risk of occurrence of a second COVID-19 epidemic wave in the UK: a modelling study. \textit{The Lancet Child \& Adolescent Health}. \url{https://www.sciencedirect.com/science/article/pii/S2352464220302509}
+
+    \item Rossi RA, Ahmed NK. \textit{ia-infect-hyper}. Network Repository. Available at: \url{https://networkrepository.com/ia-infect-hyper.php}. Accessed March 9, 2026.
+
+    \item Génois M, Vestergaard CL, Fournet J, Panisson A, Bonmarin I, Barrat A (2015) Data on face-to-face contacts in an office building suggest a low-cost vaccination strategy based on community linkers. \textit{Network Science} 3(3):326--347. \url{https://doi.org/10.1017/nws.2015.10}
+\end{enumerate}
 
 \end{document}

@@ -124,6 +124,8 @@ This project was implemented using the following tools:
 
 ## Running the Code
 
+Note: Before following this, git for windows or mac must be downloaded (https://git-scm.com/install/)
+
 1. Clone the repository
 ```bash
 git clone https://github.com/yourusername/network-sir-simulation.git

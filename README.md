@@ -29,13 +29,13 @@ Each node can be in one of three states:
 
 At each time step:
 
-- A susceptible node becomes infected with probability determined by its infected neighbors and a transmission rate \( \beta \).
-- An infected node recovers with probability \( \gamma \).
+- A susceptible node becomes infected with probability determined by its infected neighbors and a transmission rate \( β (beta) \).
+- An infected node recovers with probability \( γ (gamma) \).
 - Recovered nodes remain immune for the rest of the simulation.
 
-Before the epidemic begins, a subset of nodes \(U \subseteq V\) is chosen to be immunized. These nodes are initialized in the recovered state and cannot become infected.
+Before the epidemic begins, a subset of nodes \($U \subseteq V$) is chosen to be immunized. These nodes are initialized in the recovered state and cannot become infected.
 
-The objective is to choose the immunized set \(U\) to minimize the peak number of infections or the total number of infected individuals during the outbreak.
+The objective is to choose the immunized set \($U$\) to minimize the peak number of infections or the total number of infected individuals during the outbreak.
 
 ---
 

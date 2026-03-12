@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 import random
 import math
+import hashlib
 
 def simulate_sir(
     G,                      # G = (V,E) where nodes represent people and edges represent interactions
@@ -274,3 +275,69 @@ def choose_immunized_by_neighbor_nomination(G, k):
         break
 
     return immunized
+
+
+def stable_seed(base_seed, county_id, strategy_name, k_count, trial):
+    """Generates a reproducible seed for Monte Carlo trials."""
+    text = f"{base_seed}_{county_id}_{strategy_name}_{k_count}_{trial}"
+    return int(hashlib.md5(text.encode('utf-8')).hexdigest(), 16) % (2 ** 32)
+
+
+def evaluate_strategy_mc(args):
+    """
+    Worker function to run all Monte Carlo trials for a single strategy.
+    """
+    (strategy_name, strategy_fn, G, k_count, county_id, n_trials,
+     beta, gamma, steps, n_infected, base_seed) = args
+
+    deterministic_strategies = ["Degree", "Eigenvector", "Betweenness", "Adaptive Degree"]
+
+    # 1. Pre-calculate if Deterministic
+    if strategy_name == "baseline":
+        base_immunized = set()
+    elif strategy_name in deterministic_strategies:
+        seed0 = stable_seed(base_seed, county_id, strategy_name, k_count, 0)
+        random.seed(seed0)
+        base_immunized = strategy_fn(G, k_count)
+    else:
+        base_immunized = None
+
+    strategy_curves = []
+    total_outbreaks = []  # <--- New list to track total ever infected
+
+    # 2. Run the N_TRIALS Monte Carlo loop
+    for trial in range(n_trials):
+        seed_trial = stable_seed(base_seed, county_id, strategy_name, k_count, trial)
+        start_rng = random.Random(seed_trial + 1)
+
+        if strategy_name == "baseline" or strategy_name in deterministic_strategies:
+            immunized = base_immunized
+        else:
+            random.seed(seed_trial)
+            immunized = strategy_fn(G, k_count)
+
+        eligible = [node for node in G.nodes if node not in immunized]
+        n_start = min(n_infected, len(eligible))
+        initial_infected = start_rng.sample(eligible, n_start) if n_start > 0 else []
+
+        out = simulate_sir(
+            G,
+            beta=beta,
+            gamma=gamma,
+            steps=steps,
+            initial_infected=initial_infected,
+            immunized=immunized,
+            rng=np.random.default_rng(seed_trial + 2),
+        )
+
+        strategy_curves.append(out["I"])
+
+        # Total outbreak size = (Patient Zeros) + (New Infections during simulation)
+        total_outbreaks.append(len(initial_infected) + out["Total_inf"])
+
+    # 3. Padding logic for time-series curves
+    max_len = max(len(curve) for curve in strategy_curves)
+    padded_curves = [np.pad(c, (0, max_len - len(c)), mode='constant') for c in strategy_curves]
+
+    # Return the name, the mean time-series curve, AND the mean total outbreak size
+    return strategy_name, np.mean(padded_curves, axis=0), np.mean(total_outbreaks)
